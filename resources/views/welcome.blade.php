@@ -10,6 +10,30 @@
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
 
+        <script type="text/javascript">
+          function checkForm(form) {
+            // validation fails if the input is blank
+            if(form.url.value == '') {
+              alert('Error: The url cannot be blank!');
+              form.url.focus();
+              return false;
+            }
+
+            // regular expression to match only amazon propeties
+            var re = /^(https\:)?\/\/www\.amazon\.co\.uk\/.+/i;
+
+            // validation fails if the input doesn't match our regular expression
+            if(!re.test(form.url.value)) {
+              alert("Error: The url format is invalid.");
+              form.url.focus();
+              return false;
+            }
+
+            // validation was successful
+            return true;
+          }
+        </script>
+
         <!-- Styles -->
         <style>
             html, body {
@@ -79,17 +103,22 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Scraper
                 </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+                <h4>* Only https://www.amazon.co.uk/ properies</h4>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form action="{{ action('ScraperController@parse') }}" method="get" onsubmit="return checkForm(this)">
+                  <input type="text" id="url" name="url">
+                  <input type="submit" value="GO">
+                </form>
             </div>
         </div>
     </body>
